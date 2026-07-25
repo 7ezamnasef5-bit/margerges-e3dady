@@ -1,0 +1,305 @@
+:root {
+    --bg-main: #0b0f19;
+    --accent-blue: #6366f1;
+    --accent-glow: rgba(99, 102, 241, 0.35);
+    --accent-green: #10b981;
+    --accent-red: #f43f5e;
+    --accent-amber: #f59e0b;
+    --glass-bg: rgba(22, 30, 49, 0.75);
+    --glass-border: rgba(255, 255, 255, 0.08);
+    --text-primary: #f8fafc;
+    --text-secondary: #94a3b8;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Readex Pro', sans-serif;
+    background-color: var(--bg-main);
+    background-image: 
+        radial-gradient(at 0% 0%, rgba(99, 102, 241, 0.15) 0px, transparent 50%),
+        radial-gradient(at 100% 100%, rgba(16, 185, 129, 0.1) 0px, transparent 50%);
+    color: var(--text-primary);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    direction: rtl;
+}
+
+.wrapper {
+    width: 100%;
+    max-width: 1100px;
+}
+
+/* Glassmorphism Cards */
+.glass-card {
+    background: var(--glass-bg);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid var(--glass-border);
+    border-radius: 20px;
+    padding: 24px;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
+}
+
+.animate-pop {
+    animation: popIn 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes popIn {
+    from { opacity: 0; transform: scale(0.96) translateY(10px); }
+    to { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+/* Login Card Style */
+.login-card {
+    max-width: 420px;
+    margin: 0 auto;
+    text-align: center;
+}
+
+.brand-icon {
+    font-size: 45px;
+    margin-bottom: 10px;
+    filter: drop-shadow(0 0 10px var(--accent-glow));
+}
+
+.login-card h2 {
+    font-size: 22px;
+    font-weight: 700;
+}
+
+.subtitle {
+    color: var(--text-secondary);
+    font-size: 13px;
+    margin-bottom: 25px;
+}
+
+/* Inputs & Labels */
+.input-field {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    text-align: right;
+    margin-bottom: 15px;
+}
+
+.input-field label {
+    font-size: 12px;
+    color: var(--text-secondary);
+}
+
+.input-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+
+input {
+    width: 100%;
+    background: rgba(11, 15, 25, 0.6);
+    border: 1px solid var(--glass-border);
+    border-radius: 12px;
+    padding: 12px 16px;
+    color: #fff;
+    font-family: inherit;
+    font-size: 13px;
+    transition: all 0.25s ease;
+}
+
+input:focus {
+    outline: none;
+    border-color: var(--accent-blue);
+    box-shadow: 0 0 15px var(--accent-glow);
+    background: rgba(11, 15, 25, 0.9);
+}
+
+/* Buttons */
+button {
+    font-family: inherit;
+    cursor: pointer;
+    border: none;
+    border-radius: 12px;
+    font-weight: 600;
+    transition: all 0.2s ease;
+}
+
+.btn-glow {
+    width: 100%;
+    padding: 14px;
+    background: linear-gradient(135deg, var(--accent-blue), #4f46e5);
+    color: #fff;
+    font-size: 14px;
+    box-shadow: 0 4px 20px var(--accent-glow);
+}
+
+.btn-glow:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 25px rgba(99, 102, 241, 0.5);
+}
+
+.btn-logout {
+    background: rgba(244, 63, 94, 0.15);
+    color: var(--accent-red);
+    border: 1px solid rgba(244, 63, 94, 0.3);
+    padding: 8px 16px;
+    font-size: 12px;
+}
+
+.btn-logout:hover {
+    background: var(--accent-red);
+    color: #fff;
+}
+
+/* Dashboard Layout */
+.dash-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.header-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.badge-servant {
+    background: rgba(16, 185, 129, 0.15);
+    color: var(--accent-green);
+    border: 1px solid rgba(16, 185, 129, 0.3);
+    font-size: 11px;
+    padding: 4px 10px;
+    border-radius: 20px;
+}
+
+.dash-grid {
+    display: grid;
+    grid-template-columns: 320px 1fr;
+    gap: 20px;
+}
+
+@media (max-width: 850px) {
+    .dash-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.form-panel h3, .table-panel h3 {
+    font-size: 15px;
+    margin-bottom: 18px;
+    color: var(--text-primary);
+}
+
+.btn-action {
+    width: 100%;
+    padding: 12px;
+    font-size: 13px;
+    color: #fff;
+}
+
+.btn-action.success {
+    background: var(--accent-green);
+    box-shadow: 0 4px 15px rgba(16, 185, 129, 0.25);
+}
+
+.btn-action.amber {
+    background: var(--accent-amber);
+    box-shadow: 0 4px 15px rgba(245, 158, 11, 0.25);
+}
+
+/* Modern Table */
+.custom-table-wrapper {
+    overflow-x: auto;
+    max-height: 380px;
+    overflow-y: auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+    text-align: right;
+}
+
+th {
+    background: rgba(11, 15, 25, 0.5);
+    color: var(--text-secondary);
+    padding: 12px;
+    font-weight: 400;
+    font-size: 12px;
+    position: sticky;
+    top: 0;
+    z-index: 2;
+}
+
+td {
+    padding: 12px;
+    border-bottom: 1px solid var(--glass-border);
+}
+
+tr:hover td {
+    background: rgba(255, 255, 255, 0.02);
+}
+
+.tbl-btn {
+    padding: 4px 10px;
+    font-size: 11px;
+    margin-left: 4px;
+}
+
+.tbl-btn.edit { background: rgba(245, 158, 11, 0.2); color: var(--accent-amber); }
+.tbl-btn.delete { background: rgba(244, 63, 94, 0.2); color: var(--accent-red); }
+
+/* User Profile Stats */
+.user-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.stat-box {
+    background: rgba(11, 15, 25, 0.5);
+    border: 1px solid var(--glass-border);
+    padding: 16px;
+    border-radius: 14px;
+}
+
+.stat-box label {
+    font-size: 11px;
+    color: var(--text-secondary);
+    display: block;
+    margin-bottom: 5px;
+}
+
+.stat-box span {
+    font-size: 15px;
+    font-weight: 600;
+}
+
+/* Banner PWA */
+.pwa-banner {
+    background: linear-gradient(90deg, #4f46e5, #06b6d4);
+    padding: 10px 20px;
+    border-radius: 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    font-size: 13px;
+}
+
+.btn-pwa {
+    background: #fff;
+    color: #000;
+    padding: 6px 12px;
+    font-size: 12px;
+}

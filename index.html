@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>نظام إدارة كنيسة مارجرجس</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700&family=Readex+Pro:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <link rel="manifest" href="manifest.json">
+</head>
+<body>
+
+    <div class="wrapper">
+        
+        <section id="loginSection" class="glass-card login-card animate-pop">
+            <div class="brand-icon"><img src="icon-margerges.png"></div>
+            <h2>اجتماع إعدادي مارجرجس</h2>
+            <br>
+            <p class="subtitle">كنيسة الشهيد العظيم مارجرجس بالإسماعيلية</p>
+            
+            <div class="input-field">
+                <label for="loginInput">اسم المخدوم أو كود الخادم</label>
+                <input type="text" id="loginInput" placeholder="أدخل بيانات الدخول..." autocomplete="off">
+            </div>
+            
+            <button onclick="handleLogin()" class="btn-glow">دخول النظام </button>
+        </section>
+
+        <section id="adminSection" class="dashboard-layout animate-pop" style="display: none;">
+            
+            <header class="dash-header glass-card">
+                <div class="header-info">
+                    <h2>لوحة متابعة المخدومين 🛠️</h2>
+                    <span class="badge-servant">حساب خادم</span>
+                </div>
+                <button onclick="logout()" class="btn-logout">تسجيل خروج 🚪</button>
+            </header>
+
+            <div class="dash-grid">
+                
+                <div class="glass-card form-panel">
+                    <h3 id="formTitle">➕ إضافة مخدوم جديد</h3>
+                    <form id="makhdoumForm" onsubmit="saveMakhdoum(event)">
+                        <div class="input-field">
+                            <input type="text" id="name" placeholder="الاسم الثلاثي" required>
+                        </div>
+                        <div class="input-field">
+                            <input type="tel" id="phone" placeholder="رقم التليفون" required>
+                        </div>
+                        <div class="input-field">
+                            <input type="text" id="address" placeholder="العنوان بالتفصيل" required>
+                        </div>
+                        <div class="input-field">
+                            <label for="birthdate" id="lblBirthdate">تاريخ الميلاد</label>
+                            <input type="date" id="birthdate" required>
+                        </div>
+                        <div class="input-row">
+                            <div class="input-field">
+                                <input type="number" id="age" placeholder="السن" required>
+                            </div>
+                            <div class="input-field">
+                                <input type="number" id="grade" placeholder="الدرجة" required>
+                            </div>
+                        </div>
+                        <button type="submit" id="submitBtn" class="btn-action success">حفظ المخدوم 💾</button>
+                    </form>
+                </div>
+
+                <div class="glass-card table-panel">
+                    <h3>📊 قائمة المخدومين والدرجات</h3>
+                    <div class="custom-table-wrapper">
+                        <table id="makhdoumTable">
+                            <thead>
+                                <tr>
+                                    <th>الاسم</th>
+                                    <th>التليفون</th>
+                                    <th>العنوان</th>
+                                    <th>السن</th>
+                                    <th>الدرجة</th>
+                                    <th>الإجراءات</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <section id="userSection" class="glass-card user-card animate-pop" style="display: none;">
+            <header class="dash-header border-bottom">
+                <h2>بياناتك الشخصية 📝</h2>
+                <button onclick="logout()" class="btn-logout">خروج 🚪</button>
+            </header>
+            <div id="userData" class="user-stats-grid">
+                </div>
+        </section>
+
+    </div>
+
+    <script src="main.js"></script>
+</body>
+</html>
