@@ -1,9 +1,8 @@
-// 1. إعدادات Firebase (استبدل القيم بالقيم الخاصة بمشروعك من Firebase Console)
 const firebaseConfig = {
     apiKey: "AIzaSyDEluAU9Y0yC5s0YDu9B1GeHAIGKthL8Ks",
     authDomain: "margerges-e3dady.firebaseapp.com",
     projectId: "margerges-e3dady",
-    storageBucket: margerges-e3dady.firebasestorage.app",
+    storageBucket: "margerges-e3dady.firebasestorage.app",
     messagingSenderId: "872929460042",
     appId: "1:872929460042:web:cfd0236b81cc8c15540bb3"
 };
