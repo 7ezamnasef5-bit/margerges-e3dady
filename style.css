@@ -64,10 +64,21 @@ body {
     text-align: center;
 }
 
+/* تنسيق أيقونة وشعار الكارت والتوسيط للموبايل */
 .brand-icon {
-    font-size: 45px;
-    margin-bottom: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 15px;
     filter: drop-shadow(0 0 10px var(--accent-glow));
+}
+
+.brand-icon img {
+    max-width: 100px; /* يمكنك تعديل الحجم حسب الرغبة */
+    height: auto;
+    display: block;
+    margin: 0 auto;
+    object-fit: contain;
 }
 
 .login-card h2 {
@@ -189,6 +200,11 @@ button {
 @media (max-width: 850px) {
     .dash-grid {
         grid-template-columns: 1fr;
+    }
+    
+    /* ضُبط خصيصاً للموبايل لضمان توسيط الصورة بحجم متناسق */
+    .brand-icon img {
+        max-width: 85px;
     }
 }
 
