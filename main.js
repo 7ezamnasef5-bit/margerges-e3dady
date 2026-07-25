@@ -1,39 +1,23 @@
-// Import the functions you need from the SDKs you need
-import { initializeApp } from "firebase/app";
-import { getAnalytics } from "firebase/analytics";
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
-
-// Your web app's Firebase configuration
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
+// 1. إعدادات Firebase (استبدل القيم بالقيم الخاصة بمشروعك من Firebase Console)
 const firebaseConfig = {
-  apiKey: "AIzaSyDEluAU9Y0yC5s0YDu9B1GeHAIGKthL8Ks",
-  authDomain: "margerges-e3dady.firebaseapp.com",
-  projectId: "margerges-e3dady",
-  storageBucket: "margerges-e3dady.firebasestorage.app",
-  messagingSenderId: "872929460042",
-  appId: "1:872929460042:web:dd5b0cebf3063355540bb3",
-  measurementId: "G-0VFJQ62QD4"
+    apiKey: "AIzaSyDEluAU9Y0yC5s0YDu9B1GeHAIGKthL8Ks",
+    authDomain: "margerges-e3dady.firebaseapp.com",
+    projectId: "margerges-e3dady",
+    storageBucket: margerges-e3dady.firebasestorage.app",
+    messagingSenderId: "872929460042",
+    appId: "1:872929460042:web:cfd0236b81cc8c15540bb3"
 };
 
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
-const analytics = getAnalytics(app);
+// تهيئة Firebase
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+
 const ADMIN_CODES = ["9855"];
 let isEditing = false;
-let currentEditingIndex = -1;
-
-// 1. إدارة البيانات محلياً
-function getMakhdoumin() {
-    return JSON.parse(localStorage.getItem('makhdouminData')) || [];
-}
-
-function saveMakhdouminToStorage(data) {
-    localStorage.setItem('makhdouminData', JSON.stringify(data));
-}
+let currentEditingId = null;
 
 // 2. تسجيل الدخول
-function handleLogin() {
+async function handleLogin() {
     const inputVal = document.getElementById('loginInput').value.trim();
     if (!inputVal) return alert("من فضلك ادخل الاسم أو الكود!");
 
@@ -41,29 +25,40 @@ function handleLogin() {
         switchScreen('adminSection');
         renderTable();
     } else {
-        const data = getMakhdoumin();
-        const foundUser = data.find(user => user.name.toLowerCase() === inputVal.toLowerCase());
+        try {
+            const snapshot = await db.collection("makhdoumin").get();
+            let foundUser = null;
 
-        if (foundUser) {
-            switchScreen('userSection');
-            document.getElementById('userData').innerHTML = `
-                <div class="stat-box"><label>الاسم الكامل</label><span>👤 ${foundUser.name}</span></div>
-                <div class="stat-box"><label>رقم التليفون</label><span>📞 ${foundUser.phone}</span></div>
-                <div class="stat-box"><label>العنوان</label><span>📍 ${foundUser.address}</span></div>
-                <div class="stat-box"><label>تاريخ الميلاد</label><span>📅 ${foundUser.birthdate || '-'}</span></div>
-                <div class="stat-box"><label>السن</label><span>🎂 ${foundUser.age} سنة</span></div>
-                <div class="stat-box" style="border-color: var(--accent-green);"><label>الدرجة / التقييم</label><span style="color: var(--accent-green);">🏆 ${foundUser.grade} درجات</span></div>
-            `;
-        } else {
-            alert("الاسم غير موجود، تأكد من كتابته بشكل صحيح!");
+            snapshot.forEach(doc => {
+                const data = doc.data();
+                if (data.name.toLowerCase() === inputVal.toLowerCase()) {
+                    foundUser = data;
+                }
+            });
+
+            if (foundUser) {
+                switchScreen('userSection');
+                document.getElementById('userData').innerHTML = `
+                    <div class="stat-box"><label>الاسم الكامل</label><span>👤 ${foundUser.name}</span></div>
+                    <div class="stat-box"><label>رقم التليفون</label><span>📞 ${foundUser.phone}</span></div>
+                    <div class="stat-box"><label>العنوان</label><span>📍 ${foundUser.address}</span></div>
+                    <div class="stat-box"><label>تاريخ الميلاد</label><span>📅 ${foundUser.birthdate || '-'}</span></div>
+                    <div class="stat-box"><label>السن</label><span>🎂 ${foundUser.age} سنة</span></div>
+                    <div class="stat-box" style="border-color: var(--accent-green);"><label>الدرجة / التقييم</label><span style="color: var(--accent-green);">🏆 ${foundUser.grade} درجات</span></div>
+                `;
+            } else {
+                alert("الاسم غير موجود، تأكد من كتابته بشكل صحيح!");
+            }
+        } catch (error) {
+            console.error("خطأ في جلب البيانات:", error);
+            alert("حدث خطأ أثناء الاتصال بقاعدة البيانات");
         }
     }
 }
 
-// 3. حفظ أو تعديل مخدوم
-function saveMakhdoum(event) {
+// 3. حفظ أو تعديل مخدوم في Firebase
+async function saveMakhdoum(event) {
     event.preventDefault();
-    const data = getMakhdoumin();
 
     const makhdoumObj = {
         name: document.getElementById('name').value.trim(),
@@ -74,70 +69,88 @@ function saveMakhdoum(event) {
         grade: Number(document.getElementById('grade').value)
     };
 
-    if (isEditing && currentEditingIndex !== -1) {
-        data[currentEditingIndex] = makhdoumObj;
-        isEditing = false;
-        currentEditingIndex = -1;
-        resetFormState();
-    } else {
-        data.push(makhdoumObj);
-    }
+    try {
+        if (isEditing && currentEditingId) {
+            await db.collection("makhdoumin").doc(currentEditingId).update(makhdoumObj);
+            isEditing = false;
+            currentEditingId = null;
+            resetFormState();
+        } else {
+            await db.collection("makhdoumin").add(makhdoumObj);
+        }
 
-    saveMakhdouminToStorage(data);
-    document.getElementById('makhdoumForm').reset();
-    renderTable();
+        document.getElementById('makhdoumForm').reset();
+        renderTable();
+    } catch (error) {
+        console.error("خطأ في حفظ البيانات:", error);
+        alert("لم يتم الحفظ، تأكد من الاتصال بالإنترنت.");
+    }
 }
 
-// 4. عرض الجدول
-function renderTable() {
+// 4. عرض الجدول مباشرة من Firebase
+async function renderTable() {
     const tbody = document.querySelector('#makhdoumTable tbody');
     if (!tbody) return;
 
-    const data = getMakhdoumin();
-    tbody.innerHTML = '';
+    tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;">جاري تحميل البيانات...</td></tr>';
 
-    if (data.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; color: var(--text-secondary); padding: 30px;">لا يوجد مخدومين مسجلين حتى الآن</td></tr>`;
-        return;
+    try {
+        const snapshot = await db.collection("makhdoumin").get();
+        tbody.innerHTML = '';
+
+        if (snapshot.empty) {
+            tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; color: var(--text-secondary); padding: 30px;">لا يوجد مخدومين مسجلين حتى الآن</td></tr>`;
+            return;
+        }
+
+        snapshot.forEach(doc => {
+            const user = doc.data();
+            const id = doc.id;
+
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td><strong>${user.name}</strong></td>
+                <td>${user.phone}</td>
+                <td>${user.address}</td>
+                <td>${user.birthdate || '-'}</td>
+                <td>${user.age}</td>
+                <td><span style="color: var(--accent-green); font-weight: bold;">${user.grade}</span></td>
+                <td>
+                    <button class="tbl-btn edit" onclick="prepareEdit('${id}')">تعديل</button>
+                    <button class="tbl-btn delete" onclick="deleteMakhdoum('${id}', '${user.name}')">حذف</button>
+                </td>
+            `;
+            tbody.appendChild(row);
+        });
+    } catch (error) {
+        console.error("خطأ في تحميل الجدول:", error);
     }
-
-    data.forEach((user, index) => {
-        const row = document.createElement('tr');
-        row.innerHTML = `
-            <td><strong>${user.name}</strong></td>
-            <td>${user.phone}</td>
-            <td>${user.address}</td>
-            <td>${user.birthdate || '-'}</td>
-            <td>${user.age}</td>
-            <td><span style="color: var(--accent-green); font-weight: bold;">${user.grade}</span></td>
-            <td>
-                <button class="tbl-btn edit" onclick="prepareEdit(${index})">تعديل</button>
-                <button class="tbl-btn delete" onclick="deleteMakhdoum(${index})">حذف</button>
-            </td>
-        `;
-        tbody.appendChild(row);
-    });
 }
 
 // 5. التعديل والحذف
-function prepareEdit(index) {
-    const data = getMakhdoumin();
-    const user = data[index];
+async function prepareEdit(id) {
+    try {
+        const doc = await db.collection("makhdoumin").doc(id).get();
+        if (doc.exists) {
+            const user = doc.data();
+            document.getElementById('name').value = user.name;
+            document.getElementById('phone').value = user.phone;
+            document.getElementById('address').value = user.address;
+            document.getElementById('birthdate').value = user.birthdate || '';
+            document.getElementById('age').value = user.age;
+            document.getElementById('grade').value = user.grade;
 
-    document.getElementById('name').value = user.name;
-    document.getElementById('phone').value = user.phone;
-    document.getElementById('address').value = user.address;
-    document.getElementById('birthdate').value = user.birthdate || '';
-    document.getElementById('age').value = user.age;
-    document.getElementById('grade').value = user.grade;
+            isEditing = true;
+            currentEditingId = id;
 
-    isEditing = true;
-    currentEditingIndex = index;
-
-    document.getElementById('formTitle').innerText = "✏️ تعديل بيانات مخدوم";
-    const submitBtn = document.getElementById('submitBtn');
-    submitBtn.innerText = "تحديث البيانات الآن";
-    submitBtn.className = "btn-action amber";
+            document.getElementById('formTitle').innerText = "✏️ تعديل بيانات مخدوم";
+            const submitBtn = document.getElementById('submitBtn');
+            submitBtn.innerText = "تحديث البيانات الآن";
+            submitBtn.className = "btn-action amber";
+        }
+    } catch (error) {
+        console.error("خطأ:", error);
+    }
 }
 
 function resetFormState() {
@@ -147,12 +160,14 @@ function resetFormState() {
     submitBtn.className = "btn-action success";
 }
 
-function deleteMakhdoum(index) {
-    const data = getMakhdoumin();
-    if (confirm(`هل أنت متأكد من حذف (${data[index].name})؟`)) {
-        data.splice(index, 1);
-        saveMakhdouminToStorage(data);
-        renderTable();
+async function deleteMakhdoum(id, name) {
+    if (confirm(`هل أنت متأكد من حذف (${name})؟`)) {
+        try {
+            await db.collection("makhdoumin").doc(id).delete();
+            renderTable();
+        } catch (error) {
+            console.error("خطأ أثناء الحذف:", error);
+        }
     }
 }
 
@@ -167,7 +182,7 @@ function switchScreen(screenId) {
 function logout() {
     document.getElementById('loginInput').value = "";
     isEditing = false;
-    currentEditingIndex = -1;
+    currentEditingId = null;
     document.getElementById('makhdoumForm').reset();
     resetFormState();
     switchScreen('loginSection');
