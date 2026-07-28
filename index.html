@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>اجتماع اعدلدي بكنيسة مارجرجس بالاسماعيليه</title>
+    <title>نظام إدارة كنيسة مارجرجس</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700&family=Readex+Pro:wght@300;400;600;700&display=swap" rel="stylesheet">
@@ -69,7 +69,12 @@
                 </div>
 
                 <div class="glass-card table-panel">
-                    <h3>📊 قائمة المخدومين والدرجات</h3>
+                    <div class="table-header-flex">
+                        <h3>📊 قائمة المخدومين والدرجات</h3>
+                        <div class="input-field search-field">
+                            <input type="text" id="searchInput" onkeyup="filterTable()" placeholder="🔍 بحث باسم المخدوم أو التليفون...">
+                        </div>
+                    </div>
                     <div class="custom-table-wrapper">
                         <table id="makhdoumTable">
                             <thead>
@@ -77,13 +82,14 @@
                                     <th>الاسم</th>
                                     <th>التليفون</th>
                                     <th>العنوان</th>
+                                    <th>تاريخ الميلاد</th>
                                     <th>السن</th>
                                     <th>الدرجة</th>
                                     <th>الإجراءات</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                </tbody>
+                            </tbody>
                         </table>
                     </div>
                 </div>
@@ -97,13 +103,10 @@
                 <button onclick="logout()" class="btn-logout">خروج 🚪</button>
             </header>
             <div id="userData" class="user-stats-grid">
-                </div>
+            </div>
         </section>
 
     </div>
-
-    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
 
     <script src="main.js"></script>
 </body>
