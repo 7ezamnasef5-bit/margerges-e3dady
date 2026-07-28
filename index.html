@@ -8,7 +8,6 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700&family=Readex+Pro:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
-    <link rel="manifest" href="manifest.json">
 </head>
 <body>
 
@@ -72,7 +71,7 @@
                     <div class="table-header-flex">
                         <h3>📊 قائمة المخدومين والدرجات</h3>
                         <div class="input-field search-field">
-                            <input type="text" id="searchInput" onkeyup="filterTable()" placeholder="🔍 بحث باسم المخدوم أو التليفون...">
+                            <input type="text" id="searchInput" onkeyup="filterTable()" placeholder=" بحث باسم المخدوم أو رقم التليفون...">
                         </div>
                     </div>
                     <div class="custom-table-wrapper">
@@ -108,8 +107,36 @@
 
     </div>
 
-    <button onclick="makeCall('01211030348')" class="floating-call-btn" title="الاتصال بالخادم">📞</button>
-    
+    <div class="speed-dial-wrapper">
+        <div class="speed-dial-list">
+            <button type="button" onclick="makeCall('01211030348', 'مارك فيلوباتير')" class="dial-btn item-1">
+                📞<span>أ.مارك فيلوباتير</span> 
+            </button>
+            <button type="button" onclick="makeCall('01220044949', 'بافلي ماجد')" class="dial-btn item-2">
+                📞<span>أ.بافلي ماجد</span> 
+            </button>
+            <button type="button" onclick="makeCall('01156646770', 'بيشوي')" class="dial-btn item-3">
+                📞<span>أ.بيشوي</span> 
+            </button>
+            <button type="button" onclick="makeCall('01274040317', 'فادي شكري')" class="dial-btn item-4">
+                📞<span>أ.فادي شكري</span> 
+            </button>
+            <button type="button" onclick="makeCall('01283838001', 'يوحنا موريس')" class="dial-btn item-5">
+                📞<span>أ.يوحنا موريس</span> 
+            </button>
+            <button type="button" onclick="makeCall('01276583472', 'رضا عدلي')" class="dial-btn item-6">
+                📞<span>أ.رضا عدلي</span> 
+            </button>
+            <button type="button" onclick="makeCall('01008776304', 'مايكل ادوارد')" class="dial-btn item-7">
+                📞<span>أ.مايكل ادوارد</span> 
+            </button>
+            <button type="button" onclick="makeCall('01222282196', 'عصام عطية')" class="dial-btn item-8">
+                📞<span>أ.عصام عطية</span> 
+            </button>
+        </div>
+        <div class="main-call-btn" title="تواصل مع الخدام">📞</div>
+    </div>
+
     <script src="main.js"></script>
 </body>
 </html>
