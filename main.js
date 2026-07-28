@@ -1,4 +1,6 @@
-const ADMIN_CODES = ["9855"];
+// أكواد الخدام (يمكنك إدراج الأكواد المطلوبة هنا)
+const ADMIN_CODES = ["9855", "1234"];
+
 let isEditing = false;
 let currentEditingIndex = -1;
 
@@ -174,4 +176,12 @@ function filterTable() {
             row.style.display = 'none';
         }
     });
+}
+
+// 8. دالة التنبيه والاتصال الهاتفي
+function makeCall(phoneNumber) {
+    const userConfirmed = confirm(`📞 رقم الاتصال: ${phoneNumber}\n\nهل تريد الإتصال الآن؟`);
+    if (userConfirmed) {
+        window.location.href = `tel:${phoneNumber}`;
+    }
 }
