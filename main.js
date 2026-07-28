@@ -1,5 +1,5 @@
-// أكواد الخدام (يمكنك إدراج الأكواد المطلوبة هنا)
-const ADMIN_CODES = ["9855", "1234"];
+// أكواد الخدام
+const ADMIN_CODES = ["9855"];
 
 let isEditing = false;
 let currentEditingIndex = -1;
@@ -158,7 +158,7 @@ function logout() {
     switchScreen('loginSection');
 }
 
-// 7. دالة البحث والفلترة في الجدول
+// 7. البحث والتصفية
 function filterTable() {
     const searchInput = document.getElementById('searchInput');
     if (!searchInput) return;
@@ -178,9 +178,9 @@ function filterTable() {
     });
 }
 
-// 8. دالة التنبيه والاتصال الهاتفي
-function makeCall(phoneNumber) {
-    const userConfirmed = confirm(`📞 رقم الاتصال: ${phoneNumber}\n\nهل تريد الإتصال الآن؟`);
+// 8. تنفيذ الاتصال فور الضغط على الزرار
+function makeCall(phoneNumber, servantTitle) {
+    const userConfirmed = confirm(`📞  الاتصال بـ أ. ${servantTitle}\nالرقم: ${phoneNumber}\n\nهل تريد الاتصال الآن؟`);
     if (userConfirmed) {
         window.location.href = `tel:${phoneNumber}`;
     }
