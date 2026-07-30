@@ -3,11 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>موقع اجتماع اعدادي كنيسة مارجرجس بالاسماعيليه</title>
+    <title>نظام إدارة كنيسة مارجرجس</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700&family=Readex+Pro:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 </head>
 <body>
 
@@ -18,6 +19,7 @@
             <h2>اجتماع إعدادي مارجرجس</h2>
             <br>
             <p class="subtitle">كنيسة الشهيد العظيم مارجرجس بالإسماعيلية</p>
+            <div class="next-meeting" id="nextMeeting"></div>
             
             <div class="input-field">
                 <label for="loginInput">اسم المخدوم أو كود الخادم</label>
@@ -72,6 +74,10 @@
                         <h3>📊 قائمة المخدومين والدرجات</h3>
                         <div class="input-field search-field">
                             <input type="text" id="searchInput" onkeyup="filterTable()" placeholder=" بحث باسم المخدوم أو رقم التليفون...">
+                        </div>
+                        <div class="export-buttons">
+                            <button type="button" onclick="exportToExcel()" class="tbl-btn export-excel" title="تحميل ملف اكسيل">📥 Excel</button>
+                            <button type="button" onclick="exportToPDF()" class="tbl-btn export-pdf" title="طباعة / حفظ PDF">🖨️ PDF</button>
                         </div>
                     </div>
                     <div class="custom-table-wrapper">
