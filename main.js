@@ -178,10 +178,159 @@ function filterTable() {
     });
 }
 
+// 11. حساب وعرض ميعاد الاجتماع القادم (يوم خميس) تلقائيًا كل مرة
+function displayNextMeeting() {
+    const meetingBox = document.getElementById('nextMeeting');
+    if (!meetingBox) return;
+
+    const now = new Date();
+    const dayNames = ["الأحد", "الإثنين", "الثلاثاء", "الأربعاء", "الخميس", "الجمعة", "السبت"];
+    const monthNames = ["يناير", "فبراير", "مارس", "أبريل", "مايو", "يونيو", "يوليو", "أغسطس", "سبتمبر", "أكتوبر", "نوفمبر", "ديسمبر"];
+
+    // رقم الخميس في نظام JS هو 4 (الأحد = 0)
+    const THURSDAY = 4;
+    const meetingHour = 16;   // 4 م
+    const meetingMinute = 15; // 15 دقيقة
+
+    let daysUntilThursday = (THURSDAY - now.getDay() + 7) % 7;
+
+    // نجهز تاريخ أقرب خميس بنفس ميعاد الاجتماع (4:15 م)
+    const nextThursday = new Date(now);
+    nextThursday.setDate(now.getDate() + daysUntilThursday);
+    nextThursday.setHours(meetingHour, meetingMinute, 0, 0);
+
+    // لو النهاردة خميس وفات ميعاد الاجتماع، نروح لخميس الأسبوع اللي بعده
+    if (daysUntilThursday === 0 && now > nextThursday) {
+        nextThursday.setDate(nextThursday.getDate() + 7);
+    }
+
+    const dayLabel = dayNames[nextThursday.getDay()];
+    const dateLabel = `${nextThursday.getDate()} ${monthNames[nextThursday.getMonth()]}`;
+
+    meetingBox.innerHTML = `📅 الاجتماع القادم: ${dayLabel} ${dateLabel} - الساعة 4:15 م`;
+}
+
+// نشغّل الحساب أول ما الصفحة تفتح، فيبقى دايمًا محدث تلقائيًا من غير أي تدخل يدوي
+document.addEventListener('DOMContentLoaded', displayNextMeeting);
+
 // 8. تنفيذ الاتصال فور الضغط على الزرار
 function makeCall(phoneNumber, servantTitle) {
     const userConfirmed = confirm(`📞  الاتصال بـ أ. ${servantTitle}\nالرقم: ${phoneNumber}\n\nهل تريد الاتصال الآن؟`);
     if (userConfirmed) {
         window.location.href = `tel:${phoneNumber}`;
     }
+}
+
+// 9. تصدير بيانات المخدومين إلى ملف Excel
+function exportToExcel() {
+    const data = getMakhdoumin();
+
+    if (data.length === 0) {
+        alert("لا يوجد بيانات مخدومين لتصديرها!");
+        return;
+    }
+
+    // تجهيز البيانات بأسماء أعمدة عربية واضحة للطباعة
+    const exportData = data.map(user => ({
+        "الاسم": user.name,
+        "التليفون": user.phone,
+        "العنوان": user.address,
+        "تاريخ الميلاد": user.birthdate || '-',
+        "السن": user.age,
+        "الدرجة": user.grade
+    }));
+
+    const worksheet = XLSX.utils.json_to_sheet(exportData);
+
+    // ضبط عرض الأعمدة عشان تبقى مقروءة
+    worksheet['!cols'] = [
+        { wch: 25 }, // الاسم
+        { wch: 15 }, // التليفون
+        { wch: 30 }, // العنوان
+        { wch: 15 }, // تاريخ الميلاد
+        { wch: 8 },  // السن
+        { wch: 10 }  // الدرجة
+    ];
+
+    // تفعيل اتجاه الكتابة من اليمين لليسار داخل الشيت
+    worksheet['!dir'] = 'rtl';
+
+    const workbook = XLSX.utils.book_new();
+    workbook.Workbook = { Views: [{ RTL: true }] };
+    XLSX.utils.book_append_sheet(workbook, worksheet, "المخدومين");
+
+    const today = new Date().toISOString().slice(0, 10);
+    XLSX.writeFile(workbook, `قائمة_المخدومين_${today}.xlsx`);
+}
+
+// 10. طباعة / حفظ بيانات المخدومين كملف PDF عن طريق نافذة الطباعة
+function exportToPDF() {
+    const data = getMakhdoumin();
+
+    if (data.length === 0) {
+        alert("لا يوجد بيانات مخدومين للطباعة!");
+        return;
+    }
+
+    let rowsHtml = '';
+    data.forEach(user => {
+        rowsHtml += `
+            <tr>
+                <td>${user.name}</td>
+                <td>${user.phone}</td>
+                <td>${user.address}</td>
+                <td>${user.birthdate || '-'}</td>
+                <td>${user.age}</td>
+                <td>${user.grade}</td>
+            </tr>
+        `;
+    });
+
+    const today = new Date().toLocaleDateString('ar-EG');
+
+    const printWindow = window.open('', '_blank');
+    printWindow.document.write(`
+        <!DOCTYPE html>
+        <html lang="ar" dir="rtl">
+        <head>
+            <meta charset="UTF-8">
+            <title>قائمة المخدومين</title>
+            <style>
+                body { font-family: 'Tahoma', sans-serif; padding: 25px; direction: rtl; color: #111; }
+                h2 { text-align: center; margin-bottom: 4px; }
+                p.sub { text-align: center; color: #555; margin-bottom: 20px; font-size: 13px; }
+                table { width: 100%; border-collapse: collapse; font-size: 13px; }
+                th, td { border: 1px solid #333; padding: 8px 10px; text-align: right; }
+                th { background: #f0f0f0; }
+                tr:nth-child(even) { background: #fafafa; }
+            </style>
+        </head>
+        <body>
+            <h2>قائمة المخدومين والدرجات</h2>
+            <p class="sub">اجتماع إعدادي مارجرجس - كنيسة الشهيد العظيم مارجرجس بالإسماعيلية | تاريخ الطباعة: ${today}</p>
+            <table>
+                <thead>
+                    <tr>
+                        <th>الاسم</th>
+                        <th>التليفون</th>
+                        <th>العنوان</th>
+                        <th>تاريخ الميلاد</th>
+                        <th>السن</th>
+                        <th>الدرجة</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${rowsHtml}
+                </tbody>
+            </table>
+        </body>
+        </html>
+    `);
+    printWindow.document.close();
+    printWindow.focus();
+
+    // ندي الصفحة وقت بسيط تحمل قبل ما تفتح نافذة الطباعة
+    setTimeout(() => {
+        printWindow.print();
+    }, 400);
 }
