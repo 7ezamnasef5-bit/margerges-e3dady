@@ -214,6 +214,11 @@ button {
     padding: 12px;
     font-size: 13px;
     color: #fff;
+    transition: transform 0.3s ease;
+}
+
+.btn-action:hover {
+    transform: translateY(-4px);
 }
 
 .btn-action.success {
