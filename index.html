@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>نظام إدارة كنيسة مارجرجس</title>
+    <link rel="manifest" href="manifest.json">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700&family=Readex+Pro:wght@300;400;600;700&display=swap" rel="stylesheet">
@@ -15,7 +16,7 @@
     <div class="wrapper">
         
         <section id="loginSection" class="glass-card login-card animate-pop">
-            <div class="brand-icon"><img src="icon-margerges.png"></div>
+            <div class="brand-icon"><img src="icon-margerges.png" alt="شعار الكنيسة"></div>
             <h2>اجتماع إعدادي مارجرجس</h2>
             <br>
             <p class="subtitle">كنيسة الشهيد العظيم مارجرجس بالإسماعيلية</p>
@@ -33,7 +34,7 @@
             
             <header class="dash-header glass-card">
                 <div class="header-info">
-                    <h2>لوحة متابعة المخدومين</h2>
+                    <h2>لوحة متابعة المخدومين 🛠️</h2>
                     <span class="badge-servant">حساب خادم</span>
                 </div>
                 <button onclick="logout()" class="btn-logout">تسجيل خروج 🚪</button>
@@ -65,7 +66,7 @@
                                 <input type="number" id="grade" placeholder="الدرجة" required>
                             </div>
                         </div>
-                        <button type="submit" id="submitBtn" class="btn-action success">حفظ المخدوم</button>
+                        <button type="submit" id="submitBtn" class="btn-action success">حفظ المخدوم 💾</button>
                     </form>
                 </div>
 
@@ -76,8 +77,8 @@
                             <input type="text" id="searchInput" onkeyup="filterTable()" placeholder=" بحث باسم المخدوم أو رقم التليفون...">
                         </div>
                         <div class="export-buttons">
-                            <button type="button" onclick="exportToExcel()" class="tbl-btn export-excel" title="تحميل ملف اكسيل">Excel</button>
-                            <button type="button" onclick="exportToPDF()" class="tbl-btn export-pdf" title="طباعة / حفظ PDF">PDF</button>
+                            <button type="button" onclick="exportToExcel()" class="tbl-btn export-excel" title="تحميل ملف اكسيل">📥 Excel</button>
+                            <button type="button" onclick="exportToPDF()" class="tbl-btn export-pdf" title="طباعة / حفظ PDF">🖨️ PDF</button>
                         </div>
                     </div>
                     <div class="custom-table-wrapper">
@@ -105,7 +106,7 @@
         <section id="userSection" class="glass-card user-card animate-pop" style="display: none;">
             <header class="dash-header border-bottom">
                 <h2>بياناتك الشخصية 📝</h2>
-                <button onclick="logout()" class="btn-logout">خروج</button>
+                <button onclick="logout()" class="btn-logout">خروج 🚪</button>
             </header>
             <div id="userData" class="user-stats-grid">
             </div>
@@ -141,6 +142,12 @@
             </button>
         </div>
         <div class="main-call-btn" title="تواصل مع الخدام">📞</div>
+    </div>
+
+    <div class="install-app-wrapper" id="installAppWrapper">
+        <button type="button" id="installAppBtn" onclick="installApp()" class="install-app-btn" title="تنزيل التطبيق على جهازك">
+            <span>تنزيل التطبيق</span>
+        </button>
     </div>
 
     <script src="main.js"></script>
