@@ -178,7 +178,7 @@ function filterTable() {
     });
 }
 
-// 11. حساب وعرض ميعاد الاجتماع القادم (يوم خميس) تلقائيًا كل مرة
+// 8. حساب وعرض ميعاد الاجتماع القادم (يوم خميس) تلقائيًا
 function displayNextMeeting() {
     const meetingBox = document.getElementById('nextMeeting');
     if (!meetingBox) return;
@@ -187,19 +187,16 @@ function displayNextMeeting() {
     const dayNames = ["الأحد", "الإثنين", "الثلاثاء", "الأربعاء", "الخميس", "الجمعة", "السبت"];
     const monthNames = ["يناير", "فبراير", "مارس", "أبريل", "مايو", "يونيو", "يوليو", "أغسطس", "سبتمبر", "أكتوبر", "نوفمبر", "ديسمبر"];
 
-    // رقم الخميس في نظام JS هو 4 (الأحد = 0)
     const THURSDAY = 4;
-    const meetingHour = 16;   // 4 م
-    const meetingMinute = 15; // 15 دقيقة
+    const meetingHour = 16;
+    const meetingMinute = 15;
 
     let daysUntilThursday = (THURSDAY - now.getDay() + 7) % 7;
 
-    // نجهز تاريخ أقرب خميس بنفس ميعاد الاجتماع (4:15 م)
     const nextThursday = new Date(now);
     nextThursday.setDate(now.getDate() + daysUntilThursday);
     nextThursday.setHours(meetingHour, meetingMinute, 0, 0);
 
-    // لو النهاردة خميس وفات ميعاد الاجتماع، نروح لخميس الأسبوع اللي بعده
     if (daysUntilThursday === 0 && now > nextThursday) {
         nextThursday.setDate(nextThursday.getDate() + 7);
     }
@@ -210,10 +207,9 @@ function displayNextMeeting() {
     meetingBox.innerHTML = `📅 الاجتماع القادم: ${dayLabel} ${dateLabel} - الساعة 4:15 م`;
 }
 
-// نشغّل الحساب أول ما الصفحة تفتح، فيبقى دايمًا محدث تلقائيًا من غير أي تدخل يدوي
 document.addEventListener('DOMContentLoaded', displayNextMeeting);
 
-// 8. تنفيذ الاتصال فور الضغط على الزرار
+// 9. تنفيذ الاتصال فور الضغط على الزرار
 function makeCall(phoneNumber, servantTitle) {
     const userConfirmed = confirm(`📞  الاتصال بـ أ. ${servantTitle}\nالرقم: ${phoneNumber}\n\nهل تريد الاتصال الآن؟`);
     if (userConfirmed) {
@@ -221,7 +217,7 @@ function makeCall(phoneNumber, servantTitle) {
     }
 }
 
-// 9. تصدير بيانات المخدومين إلى ملف Excel
+// 10. تصدير بيانات المخدومين إلى ملف Excel
 function exportToExcel() {
     const data = getMakhdoumin();
 
@@ -230,7 +226,6 @@ function exportToExcel() {
         return;
     }
 
-    // تجهيز البيانات بأسماء أعمدة عربية واضحة للطباعة
     const exportData = data.map(user => ({
         "الاسم": user.name,
         "التليفون": user.phone,
@@ -242,17 +237,15 @@ function exportToExcel() {
 
     const worksheet = XLSX.utils.json_to_sheet(exportData);
 
-    // ضبط عرض الأعمدة عشان تبقى مقروءة
     worksheet['!cols'] = [
-        { wch: 25 }, // الاسم
-        { wch: 15 }, // التليفون
-        { wch: 30 }, // العنوان
-        { wch: 15 }, // تاريخ الميلاد
-        { wch: 8 },  // السن
-        { wch: 10 }  // الدرجة
+        { wch: 25 },
+        { wch: 15 },
+        { wch: 30 },
+        { wch: 15 },
+        { wch: 8 },
+        { wch: 10 }
     ];
 
-    // تفعيل اتجاه الكتابة من اليمين لليسار داخل الشيت
     worksheet['!dir'] = 'rtl';
 
     const workbook = XLSX.utils.book_new();
@@ -263,7 +256,7 @@ function exportToExcel() {
     XLSX.writeFile(workbook, `قائمة_المخدومين_${today}.xlsx`);
 }
 
-// 10. طباعة / حفظ بيانات المخدومين كملف PDF عن طريق نافذة الطباعة
+// 11. طباعة / حفظ بيانات المخدومين كملف PDF
 function exportToPDF() {
     const data = getMakhdoumin();
 
@@ -329,8 +322,33 @@ function exportToPDF() {
     printWindow.document.close();
     printWindow.focus();
 
-    // ندي الصفحة وقت بسيط تحمل قبل ما تفتح نافذة الطباعة
     setTimeout(() => {
         printWindow.print();
     }, 400);
 }
+
+// 12. تنزيل وتثبيت التطبيق على الهاتف (PWA)
+let deferredPrompt = null;
+
+window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    deferredPrompt = e;
+});
+
+async function installApp() {
+    if (deferredPrompt) {
+        deferredPrompt.prompt();
+        const { outcome } = await deferredPrompt.userChoice;
+        if (outcome === 'accepted') {
+            console.log('تم قبول التثبيت بنجاح');
+        }
+        deferredPrompt = null;
+    } else {
+        alert("📲 لتثبيت التطبيق على هاتفك:\n\n1️⃣ متصفح Chrome (أندرويد):\nاضغط على القائمة (⋮) ثم اختر 'تثبيت التطبيق' أو 'الإضافة إلى الشاشة الرئيسية'.\n\n2️⃣ متصفح Safari (آيفون):\nاضغط زر المشاركة (Share ⎋) ثم اختر 'إضافة إلى الشاشة الرئيسية' (Add to Home Screen).");
+    }
+}
+
+window.addEventListener('appinstalled', () => {
+    deferredPrompt = null;
+    alert("🎉 تم تثبيت تطبيق الاجتماع بنجاح!");
+});
