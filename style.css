@@ -313,11 +313,13 @@ tr:hover td {
     background: rgba(16, 185, 129, 0.15);
     color: var(--accent-green);
     border-color: rgba(16, 185, 129, 0.35);
+    transition: transform 0.3s ease:
 }
 
 .tbl-btn.export-excel:hover {
     background: var(--accent-green);
     color: #fff;
+    transform: translateY(-4px):
 }
 
 .tbl-btn.export-pdf {
