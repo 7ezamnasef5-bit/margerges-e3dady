@@ -197,6 +197,56 @@ button {
     border-radius: 20px;
 }
 
+.header-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.age-actions {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.age-btn {
+    width: auto;
+    padding: 8px 12px;
+    font-size: 11px;
+    font-weight: 700;
+    border: 1px solid transparent;
+    white-space: nowrap;
+}
+
+.age-btn.increase {
+    background: rgba(16, 185, 129, 0.15);
+    color: var(--accent-green);
+    border-color: rgba(16, 185, 129, 0.35);
+}
+
+.age-btn.increase:hover {
+    background: var(--accent-green);
+    color: #fff;
+}
+
+.age-btn.decrease {
+    background: rgba(244, 63, 94, 0.15);
+    color: var(--accent-red);
+    border-color: rgba(244, 63, 94, 0.35);
+}
+
+.age-btn.decrease:hover {
+    background: var(--accent-red);
+    color: #fff;
+}
+
+.age-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+}
+
 .dash-grid {
     display: grid;
     grid-template-columns: 320px 1fr;
@@ -497,8 +547,20 @@ tr:hover td {
         gap: 12px;
     }
 
-    .btn-logout {
-        align-self: flex-end;
+    .header-actions {
+        width: 100%;
+        justify-content: space-between;
+        flex-wrap: wrap;
+    }
+
+    .age-actions {
+        flex: 1;
+    }
+
+    .age-btn {
+        flex: 1;
+        padding: 8px 6px;
+        font-size: 10px;
     }
 
     .input-row {
