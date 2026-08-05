@@ -199,6 +199,66 @@ async function deleteMakhdoum(docId, name) {
 }
 
 // ==========================================
+// 7.1 زيادة / إنقاص سنة لكل المخدومين دفعة واحدة
+// ==========================================
+async function bulkUpdateAllAges(delta) {
+    if (cachedMakhdoumin.length === 0) {
+        alert("لا يوجد بيانات مخدومين لتحديثها!");
+        return;
+    }
+
+    const actionLabel = delta > 0 ? "زيادة" : "إنقاص";
+    const confirmed = confirm(
+        `هل أنت متأكد من ${actionLabel} سنة واحدة لسن كل المخدومين؟\n` +
+        `سيتم تحديث سن (${cachedMakhdoumin.length}) مخدوم، ولا يمكن التراجع عن هذه الخطوة تلقائياً.`
+    );
+    if (!confirmed) return;
+
+    const incBtn = document.getElementById('incrementAgeBtn');
+    const decBtn = document.getElementById('decrementAgeBtn');
+    const activeBtn = delta > 0 ? incBtn : decBtn;
+    const originalLabel = activeBtn ? activeBtn.innerHTML : '';
+
+    [incBtn, decBtn].forEach(b => { if (b) b.disabled = true; });
+    if (activeBtn) activeBtn.innerText = "⏳ جاري التحديث...";
+
+    try {
+        // فايرستور بيسمح بحد أقصى 500 عملية كتابة في الـ batch الواحد
+        // فبنقسم البيانات على دفعات (chunks) أصغر لضمان نجاح العملية مهما كان عدد المخدومين
+        const BATCH_LIMIT = 400;
+        for (let i = 0; i < cachedMakhdoumin.length; i += BATCH_LIMIT) {
+            const chunk = cachedMakhdoumin.slice(i, i + BATCH_LIMIT);
+            const batch = db.batch();
+
+            chunk.forEach(user => {
+                const docRef = db.collection("makhdoumin").doc(user.id);
+                batch.update(docRef, {
+                    age: firebase.firestore.FieldValue.increment(delta)
+                });
+            });
+
+            await batch.commit();
+        }
+
+        alert(`🎉 تم ${actionLabel} سن جميع المخدومين بنجاح!`);
+    } catch (error) {
+        console.error("خطأ أثناء تحديث الأعمار:", error);
+        alert("حدث خطأ أثناء تحديث الأعمار، برجاء التأكد من الاتصال بالإنترنت والمحاولة مجدداً.");
+    } finally {
+        [incBtn, decBtn].forEach(b => { if (b) b.disabled = false; });
+        if (activeBtn) activeBtn.innerHTML = originalLabel;
+    }
+}
+
+function incrementAllAges() {
+    return bulkUpdateAllAges(1);
+}
+
+function decrementAllAges() {
+    return bulkUpdateAllAges(-1);
+}
+
+// ==========================================
 // 8. التنقل والـ Logout
 // ==========================================
 function switchScreen(screenId) {
